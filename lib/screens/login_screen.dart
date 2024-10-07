@@ -33,25 +33,25 @@ class _LoginScreenState extends State<LoginScreen> {
     List<User> _mockedUsers = [
       User(id: 1, nome: 'Alice', email: 'alice@gmail.com', password: '123456'),
       User(id: 2, nome: 'Bob', email: 'bob@example.com', password: 'abcdef'),
-      User(id: 3, nome: 'Lucas', email: 'lucas@gmail.com', password: '123456')
+      User(id: 3, nome: 'Lucas', email: 'lucas@gmail.com', password: '123456'),
     ];
 
     // Simulação de delay como se estivesse fazendo uma requisição
     await Future.delayed(Duration(seconds: 1));
 
-    User? user = _mockedUsers
-            .where(
-              (user) => user.email == email && user.password == senha,
-            )
-            .isNotEmpty
-        ? _mockedUsers.first
-        : null;
+    // Verifique o usuário com base no e-mail e na senha
+    User? user = _mockedUsers.firstWhere(
+      (user) => user.email == email && user.password == senha,
+      orElse: () =>
+          User(id: -1, nome: 'Usuário não encontrado', email: '', password: ''),
+    );
 
     setState(() {
       _isLoading = false;
     });
 
-    if (user != null) {
+    if (user.id != -1) {
+      // Navega para a HomeScreen passando o usuário logado
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(builder: (context) => HomeScreen(user: user)),
       );
@@ -75,7 +75,7 @@ class _LoginScreenState extends State<LoginScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              'Meu Patrimônio ',
+              'Meu Patrimônio',
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,

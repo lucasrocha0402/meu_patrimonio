@@ -6,13 +6,13 @@ class AuthService {
     User(id: 2, nome: 'Caua', email: 'caua@gmail.com', password: '123456'),
   ];
 
-  User? login(String email) {
+  User? login(String email, String password) {
     try {
       return _mockedUsers.firstWhere(
-        (user) => user.email == email,
+        (user) => user.email == email && user.password == password,
       );
     } catch (e) {
-      return null;
+      return null; // Retorna null se não encontrar o usuário
     }
   }
 }

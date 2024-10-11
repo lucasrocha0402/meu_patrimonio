@@ -50,8 +50,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
           if (widget.patrimonio.isNotEmpty) {
             Navigator.of(context).pushReplacement(
               MaterialPageRoute(
-                  builder: (context) => BarcodeScannerScreen(
-                      user: widget.user, patrimonios: widget.patrimonio)),
+                builder: (context) => BarcodeScannerScreen(
+                  user: widget.user,
+                  patrimonios: widget.patrimonio,
+                ),
+              ),
             );
           }
           break;
@@ -62,20 +65,35 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Perfil')),
+      appBar: AppBar(
+        backgroundColor: Colors.greenAccent,
+        title: Center(
+          child: Text(
+            'Conecta',
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+      ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(32.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
-              'Bem-vindo, ${widget.userName}!',
-              style: TextStyle(fontSize: 24),
-            ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () => _showLogoutConfirmationDialog(context),
-              child: Text('Sair da conta'),
+            Center(
+              child: ElevatedButton(
+                onPressed: () => _showLogoutConfirmationDialog(context),
+                style: ElevatedButton.styleFrom(
+                  padding: EdgeInsets.symmetric(
+                      horizontal: 30,
+                      vertical: 20), // Aumenta o tamanho do botão
+                  textStyle:
+                      TextStyle(fontSize: 18), // Aumenta o tamanho do texto
+                ),
+                child: Text('Sair da conta'),
+              ),
             ),
           ],
         ),
@@ -83,15 +101,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
       bottomNavigationBar: BottomNavigationBar(
         items: const [
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
+            icon: Icon(Icons.home, size: 50),
             label: 'Início',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.person),
+            icon: Icon(Icons.person, size: 50),
             label: 'Perfil',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.qr_code),
+            icon: Icon(Icons.qr_code, size: 50),
             label: 'Manutenções',
           ),
         ],

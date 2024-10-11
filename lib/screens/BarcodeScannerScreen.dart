@@ -22,7 +22,16 @@ class _BarcodeScannerScreenState extends State<BarcodeScannerScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Leitor de Código de Barras/QR Code'),
+        backgroundColor: Colors.greenAccent,
+        title: Center(
+          child: Text(
+            'Conecta',
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
       ),
       body: Center(
         child: Column(
@@ -49,10 +58,12 @@ class _BarcodeScannerScreenState extends State<BarcodeScannerScreen> {
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Início'),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Perfil'),
           BottomNavigationBarItem(
-              icon: Icon(Icons.qr_code), label: 'Manutenções'),
+              icon: Icon(Icons.home, size: 50), label: 'Início'),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.person, size: 50), label: 'Perfil'),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.qr_code, size: 50), label: 'Manutenções'),
         ],
         currentIndex: _currentIndex, // Define o índice atual
         onTap: (index) {

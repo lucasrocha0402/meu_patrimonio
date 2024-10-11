@@ -32,7 +32,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
       switch (index) {
         case 0:
-          // Já está na tela inicial, não faz nada
           break;
         case 1:
           // Navegar para a tela de perfil
@@ -91,15 +90,15 @@ class _HomeScreenState extends State<HomeScreen> {
       bottomNavigationBar: BottomNavigationBar(
         items: const [
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
+            icon: Icon(Icons.home, size: 50),
             label: 'Início',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.person),
+            icon: Icon(Icons.person, size: 50),
             label: 'Perfil',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.qr_code),
+            icon: Icon(Icons.qr_code, size: 50),
             label: 'Manutenções',
           ),
         ],
@@ -118,10 +117,13 @@ class _HomeScreenState extends State<HomeScreen> {
             'Olá, ${widget.user.nome}!', // Mostrando o nome do usuário
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
-          SizedBox(height: 20),
+          SizedBox(height: 30),
           Text(
             'Patrimônios',
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
+          Divider(
+            thickness: 2,
           ),
           SizedBox(height: 10),
           Expanded(

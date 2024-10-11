@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import '../models/user.dart';
 import 'profile_screen.dart';
 import '../models/patrimonio.dart';
-import 'package:intl/intl.dart';
-import 'BarcodeScannerScreen.dart'; // Corrigido para minúsculas
+import 'BarcodeScannerScreen.dart';
+import 'history_manuetencao_screen.dart'; // Corrigido para minúsculas
 
 class HomeScreen extends StatefulWidget {
   final User user;
@@ -66,9 +66,10 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.greenAccent,
         title: Center(
           child: Text(
-            'Meu Patrimônio',
+            'Conecta',
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
@@ -85,7 +86,6 @@ class _HomeScreenState extends State<HomeScreen> {
             user: widget.user,
             patrimonio: patrimonios,
           ),
-          // Aqui você pode adicionar a tela de manutenções, se necessário
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
@@ -120,7 +120,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           SizedBox(height: 20),
           Text(
-            'Seus Patrimônios',
+            'Patrimônios',
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
           SizedBox(height: 10),
@@ -132,10 +132,20 @@ class _HomeScreenState extends State<HomeScreen> {
                   margin: EdgeInsets.symmetric(vertical: 8.0),
                   child: ListTile(
                     leading: Icon(Icons.check_circle),
-                    title: Text(patrimonios[index].nome),
-                    subtitle: Text(
-                      'Valor: ${NumberFormat.currency(locale: 'pt_BR', symbol: 'R\$').format(patrimonios[index].valor)}',
-                    ),
+                    title: Text(
+                      '${patrimonios[index].nome} (${patrimonios[index].id})',
+                      style: TextStyle(color: Colors.blue),
+                    ), // Exibindo apenas o ID
+                    onTap: () {
+                      // Navegar para a tela de histórico de manutenções
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => HistoryManutencaoScreen(
+                            patrimonio: patrimonios[index],
+                          ),
+                        ),
+                      );
+                    },
                   ),
                 );
               },

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../models/patrimonio.dart';
 
 class AddPatrimonioScreen extends StatelessWidget {
   final TextEditingController nomeController = TextEditingController();

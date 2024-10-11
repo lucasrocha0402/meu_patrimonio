@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/patrimonio.dart';
-import 'ProductDetailScreen .dart';
+import 'ProductDetailScreen.dart';
 
 class SearchPatrimonioScreen extends StatefulWidget {
   final List<Patrimonio> patrimonioList;

@@ -2,61 +2,54 @@ import 'package:flutter/material.dart';
 import 'package:patrimonio_izzy_app/models/patrimonio.dart';
 import '../models/user.dart';
 import '../screens/login_screen.dart';
-import '../screens/home_screen.dart'; // Importe a tela inicial
-import 'BarcodeScannerScreen.dart'; // Ajuste para importar a tela de scanner
+import '../screens/home_screen.dart';
+import 'BarcodeScannerScreen.dart';
 
 class ProfileScreen extends StatefulWidget {
   final String userName;
   final User user;
   final List<Patrimonio> patrimonio;
 
-  ProfileScreen({
+  const ProfileScreen({
     required this.userName,
     required this.user,
     required this.patrimonio,
-  });
+    Key? key,
+  }) : super(key: key);
 
   @override
   _ProfileScreenState createState() => _ProfileScreenState();
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  int _currentIndex = 1; // Defina um índice inicial
+  int _currentIndex = 2; // Ajustado para que o perfil seja o selecionado
 
   void _onItemTapped(int index) {
     if (index != _currentIndex) {
       setState(() {
         _currentIndex = index;
       });
+
       switch (index) {
         case 0:
           Navigator.of(context).pushReplacement(
             MaterialPageRoute(
-                builder: (context) => HomeScreen(user: widget.user)),
+              builder: (context) => HomeScreen(user: widget.user),
+            ),
           );
           break;
         case 1:
           Navigator.of(context).pushReplacement(
             MaterialPageRoute(
-              builder: (context) => ProfileScreen(
-                userName: widget.userName,
+              builder: (context) => BarcodeScannerScreen(
                 user: widget.user,
-                patrimonio: widget.patrimonio,
+                patrimonios: widget.patrimonio,
               ),
             ),
           );
           break;
         case 2:
-          if (widget.patrimonio.isNotEmpty) {
-            Navigator.of(context).pushReplacement(
-              MaterialPageRoute(
-                builder: (context) => BarcodeScannerScreen(
-                  user: widget.user,
-                  patrimonios: widget.patrimonio,
-                ),
-              ),
-            );
-          }
+          // Já está na tela de perfil, não faz nada
           break;
       }
     }
@@ -67,7 +60,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.greenAccent,
-        title: Center(
+        title: const Center(
           child: Text(
             'Conecta',
             style: TextStyle(
@@ -78,22 +71,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(32.0),
+        padding: const EdgeInsets.all(47.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Center(
-              child: ElevatedButton(
-                onPressed: () => _showLogoutConfirmationDialog(context),
-                style: ElevatedButton.styleFrom(
-                  padding: EdgeInsets.symmetric(
-                      horizontal: 30,
-                      vertical: 20), // Aumenta o tamanho do botão
-                  textStyle:
-                      TextStyle(fontSize: 18), // Aumenta o tamanho do texto
-                ),
-                child: Text('Sair da conta'),
-              ),
+              child: _buildLogoutButton(),
             ),
           ],
         ),
@@ -105,17 +88,33 @@ class _ProfileScreenState extends State<ProfileScreen> {
             label: 'Início',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.person, size: 50),
-            label: 'Perfil',
-          ),
-          BottomNavigationBarItem(
             icon: Icon(Icons.qr_code, size: 50),
             label: 'Manutenções',
           ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person, size: 50),
+            label: 'Perfil',
+          ),
         ],
         currentIndex: _currentIndex,
+        selectedItemColor: Colors.purple, // Cor do ícone selecionado
+        unselectedItemColor: Colors.black, // Cor dos ícones não selecionados
         onTap: _onItemTapped,
       ),
+    );
+  }
+
+  ElevatedButton _buildLogoutButton() {
+    return ElevatedButton(
+      onPressed: () => _showLogoutConfirmationDialog(context),
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.greenAccent,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 110.0),
+      ),
+      child: const Text('Sair da conta'),
     );
   }
 
@@ -124,16 +123,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('Confirmar Logout'),
-          content: Text('Você tem certeza que deseja sair da conta?'),
+          title: const Text('Confirmar Logout'),
+          content: const Text('Você tem certeza que deseja sair da conta?'),
           actions: [
             TextButton(
-              onPressed: () => Navigator.of(context).pop(), // Fecha o diálogo
-              child: Text('Cancelar'),
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Cancelar'),
             ),
             TextButton(
-              onPressed: () => _logout(context), // Chama a função de logout
-              child: Text('Sair'),
+              onPressed: () => _logout(context),
+              child: const Text('Sair'),
             ),
           ],
         );
@@ -142,7 +141,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   void _logout(BuildContext context) {
-    // Aqui você pode adicionar a lógica para encerrar a sessão do usuário
     Navigator.of(context).pushAndRemoveUntil(
       MaterialPageRoute(builder: (context) => LoginScreen()),
       (route) => false,

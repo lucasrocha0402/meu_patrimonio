@@ -48,7 +48,14 @@ class _ManutencaoScreenState extends State<ManutencaoScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Manutenção do Patrimônio'),
+        backgroundColor: Colors.greenAccent,
+        title: Text(
+          'Manutenção do Patrimônio',
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         actions: [
           IconButton(
             icon: Icon(Icons.check),
@@ -56,7 +63,7 @@ class _ManutencaoScreenState extends State<ManutencaoScreen> {
           ),
         ],
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

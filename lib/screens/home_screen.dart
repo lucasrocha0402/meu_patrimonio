@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import '../models/user.dart';
-import 'profile_screen.dart';
 import '../models/patrimonio.dart';
 import 'BarcodeScannerScreen.dart';
-import 'history_manuetencao_screen.dart'; // Corrigido para minúsculas
+import 'profile_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   final User user;
@@ -18,10 +17,33 @@ class _HomeScreenState extends State<HomeScreen> {
   int _currentIndex = 0;
 
   final List<Patrimonio> patrimonios = [
-    Patrimonio(id: '1', nome: 'Fone', valor: 4.00),
-    Patrimonio(id: '2', nome: 'Teclado', valor: 5.00),
-    Patrimonio(id: '3', nome: 'Monitor', valor: 7.00),
-    // Adicione mais itens conforme necessário
+    Patrimonio(
+      id: '1',
+      nome: 'Fone',
+      serie: 123456,
+      categoria: 'Eletrônicos',
+      marca: 'Marca A',
+      garantia: '12 meses',
+      colaborador: 'João Silva',
+    ),
+    Patrimonio(
+      id: '2',
+      nome: 'Teclado',
+      serie: 654321,
+      categoria: 'Periféricos',
+      marca: 'Marca B',
+      garantia: '24 meses',
+      colaborador: 'Maria Oliveira',
+    ),
+    Patrimonio(
+      id: '3',
+      nome: 'Monitor',
+      serie: 789012,
+      categoria: 'Monitores',
+      marca: 'Marca C',
+      garantia: '36 meses',
+      colaborador: 'Carlos Pereira',
+    ),
   ];
 
   void _onItemTapped(int index) {
@@ -29,35 +51,6 @@ class _HomeScreenState extends State<HomeScreen> {
       setState(() {
         _currentIndex = index;
       });
-
-      switch (index) {
-        case 0:
-          break;
-        case 1:
-          // Navegar para a tela de perfil
-          Navigator.of(context).pushReplacement(
-            MaterialPageRoute(
-              builder: (context) => ProfileScreen(
-                userName: widget.user.nome,
-                user: widget.user,
-                patrimonio: patrimonios,
-              ),
-            ),
-          );
-          break;
-        case 2:
-          if (patrimonios.isNotEmpty) {
-            Navigator.of(context).pushReplacement(
-              MaterialPageRoute(
-                builder: (context) => BarcodeScannerScreen(
-                  user: widget.user,
-                  patrimonios: patrimonios,
-                ),
-              ),
-            );
-          }
-          break;
-      }
     }
   }
 
@@ -80,6 +73,10 @@ class _HomeScreenState extends State<HomeScreen> {
         index: _currentIndex,
         children: [
           _buildHomePage(),
+          BarcodeScannerScreen(
+            user: widget.user,
+            patrimonios: patrimonios,
+          ),
           ProfileScreen(
             userName: widget.user.nome,
             user: widget.user,
@@ -94,15 +91,17 @@ class _HomeScreenState extends State<HomeScreen> {
             label: 'Início',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.person, size: 50),
-            label: 'Perfil',
-          ),
-          BottomNavigationBarItem(
             icon: Icon(Icons.qr_code, size: 50),
             label: 'Manutenções',
           ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person, size: 50),
+            label: 'Perfil',
+          ),
         ],
         currentIndex: _currentIndex,
+        selectedItemColor: Colors.purple, // Cor do ícone selecionado
+        unselectedItemColor: Colors.black, // Cor dos ícones não selecionados
         onTap: _onItemTapped,
       ),
     );
@@ -114,7 +113,7 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Column(
         children: [
           Text(
-            'Olá, ${widget.user.nome}!', // Mostrando o nome do usuário
+            'Olá, ${widget.user.nome}!',
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
           SizedBox(height: 30),
@@ -122,9 +121,7 @@ class _HomeScreenState extends State<HomeScreen> {
             'Patrimônios',
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
-          Divider(
-            thickness: 2,
-          ),
+          Divider(thickness: 2),
           SizedBox(height: 10),
           Expanded(
             child: ListView.builder(
@@ -137,17 +134,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     title: Text(
                       '${patrimonios[index].nome} (${patrimonios[index].id})',
                       style: TextStyle(color: Colors.blue),
-                    ), // Exibindo apenas o ID
-                    onTap: () {
-                      // Navegar para a tela de histórico de manutenções
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => HistoryManutencaoScreen(
-                            patrimonio: patrimonios[index],
-                          ),
-                        ),
-                      );
-                    },
+                    ),
+                    onTap: () {},
                   ),
                 );
               },

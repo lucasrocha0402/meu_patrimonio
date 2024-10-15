@@ -4,8 +4,13 @@ import 'ProductDetailScreen.dart';
 
 class SearchPatrimonioScreen extends StatefulWidget {
   final List<Patrimonio> patrimonioList;
+  final dynamic user; // Adicione o parâmetro user
+  final List<Patrimonio> patrimonios; // Adicione o parâmetro patrimonios
 
-  SearchPatrimonioScreen({required this.patrimonioList});
+  SearchPatrimonioScreen(
+      {required this.patrimonioList,
+      required this.user,
+      required this.patrimonios});
 
   @override
   _SearchPatrimonioScreenState createState() => _SearchPatrimonioScreenState();
@@ -66,6 +71,9 @@ class _SearchPatrimonioScreenState extends State<SearchPatrimonioScreen> {
                               MaterialPageRoute(
                                 builder: (context) => ProductDetailScreen(
                                   patrimonio: filteredList[index],
+                                  user: widget.user, // Passando o user aqui
+                                  patrimonios: widget
+                                      .patrimonios, // Passando a lista de patrimônios
                                 ),
                               ),
                             );

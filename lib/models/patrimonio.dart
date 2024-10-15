@@ -1,20 +1,27 @@
 class Patrimonio {
   final String id;
   final String nome;
-  final double valor;
-  final List<String> fotos; // Adiciona a lista de fotos
+  final double serie;
+  final String categoria;
+  final String marca;
+  final String garantia;
+  final String colaborador;
+  final List<String> fotos;
 
   Patrimonio({
     required this.id,
     required this.nome,
-    required this.valor,
-    this.fotos =
-        const [], // Inicializa como uma lista vazia se não houver fotos
+    required this.serie,
+    required this.categoria,
+    required this.marca,
+    required this.garantia,
+    required this.colaborador,
+    this.fotos = const [],
   });
 
   @override
   String toString() {
-    return 'Patrimonio{id: $id, nome: $nome, valor: $valor, fotos: $fotos}';
+    return 'Patrimonio{id: $id, nome: $nome, serie: $serie, categoria: $categoria, marca: $marca, garantia: $garantia, colaborador: $colaborador, fotos: $fotos}';
   }
 
   @override
@@ -24,15 +31,22 @@ class Patrimonio {
     return other is Patrimonio &&
         other.id == id &&
         other.nome == nome &&
-        other.valor == valor &&
+        other.serie == serie &&
+        other.categoria == categoria &&
+        other.marca == marca &&
+        other.garantia == garantia &&
+        other.colaborador == colaborador &&
         other.fotos == fotos; // Compara as fotos
   }
 
   @override
   int get hashCode =>
-      id.hashCode ^ nome.hashCode ^ valor.hashCode ^ fotos.hashCode;
-
-  String get formattedValor {
-    return 'R\$ ${valor.toStringAsFixed(2)}';
-  }
+      id.hashCode ^
+      nome.hashCode ^
+      serie.hashCode ^
+      categoria.hashCode ^
+      marca.hashCode ^
+      garantia.hashCode ^
+      colaborador.hashCode ^
+      fotos.hashCode;
 }

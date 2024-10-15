@@ -1,20 +1,33 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:patrimonio_izzy_app/models/user.dart';
 import '../models/patrimonio.dart';
 import 'fotos_screen.dart';
-import 'manutencao_screen.dart'; // Certifique-se de ter a tela de manutenção
-import 'adicionar_foto_screen.dart'; // Certifique-se de ter a tela de adicionar foto
+import 'manutencao_screen.dart';
+import 'adicionar_foto_screen.dart';
 
 class ProductDetailScreen extends StatelessWidget {
   final Patrimonio patrimonio;
+  final User user; // Adicione esta variável
+  final List<Patrimonio> patrimonios; // Adicione esta variável
 
-  ProductDetailScreen({required this.patrimonio});
+  ProductDetailScreen({
+    required this.patrimonio,
+    required this.user, // Receber User pelo construtor
+    required this.patrimonios, // Receber a lista de Patrimonios
+  });
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Detalhes do Patrimônio'),
+        backgroundColor: Colors.greenAccent,
+        title: Text(
+          'Detalhes do Patrimônio',
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         actions: [
           PopupMenuButton<String>(
             onSelected: (value) {
@@ -27,13 +40,7 @@ class ProductDetailScreen extends StatelessWidget {
                   ),
                 );
               } else if (value == 'adicionar_foto') {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) =>
-                        AdicionarFotoScreen(patrimonioId: patrimonio.id),
-                  ),
-                );
+                _adicionarFoto(context);
               }
             },
             itemBuilder: (context) => [
@@ -58,47 +65,92 @@ class ProductDetailScreen extends StatelessWidget {
               'Nome: ${patrimonio.nome}',
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 10),
+            SizedBox(height: 30),
             Text(
               'ID: ${patrimonio.id}',
               style: TextStyle(fontSize: 18),
             ),
-            SizedBox(height: 10),
+            SizedBox(height: 30),
             Text(
-              'Valor: ${NumberFormat.currency(locale: 'pt_BR', symbol: 'R\$').format(patrimonio.valor)}',
+              'Série: ${patrimonio.serie}',
               style: TextStyle(fontSize: 18),
             ),
-            SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text('Fotos:', style: TextStyle(fontSize: 18)),
-                IconButton(
-                  icon: Icon(Icons.photo_library),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            FotosScreen(fotos: patrimonio.fotos),
-                      ),
-                    );
-                  },
-                ),
-              ],
+            SizedBox(height: 30),
+            Text(
+              'Categoria: ${patrimonio.categoria}',
+              style: TextStyle(fontSize: 18),
             ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Ação executada com sucesso!')),
-                );
-              },
-              child: Text('Executar Ação'),
+            SizedBox(height: 30),
+            Text(
+              'Marca: ${patrimonio.marca}',
+              style: TextStyle(fontSize: 18),
             ),
+            SizedBox(height: 30),
+            Text(
+              'Garantia: ${patrimonio.garantia}',
+              style: TextStyle(fontSize: 18),
+            ),
+            SizedBox(height: 30),
+            Text(
+              'Colaborador: ${patrimonio.colaborador}',
+              style: TextStyle(fontSize: 18),
+            ),
+            SizedBox(height: 40),
           ],
         ),
       ),
+      bottomNavigationBar: BottomNavigationBar(
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.info, size: 50),
+            label: 'Dados',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.photo_library, size: 50),
+            label: 'Fotos',
+          ),
+        ],
+        onTap: (index) {
+          if (index == 1) {
+            // Navegar para a tela de fotos
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => FotosScreen(
+                  fotos: patrimonio.fotos, // Passando as fotos do patrimônio
+                  patrimonio: patrimonio,
+                  user: user, // Passando o usuário
+                  patrimonios: patrimonios, // Passando a lista de patrimônios
+                ),
+              ),
+            );
+          }
+        },
+      ),
     );
+  }
+
+  void _adicionarFoto(BuildContext context) async {
+    final novasFotos = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => AdicionarFotoScreen(),
+      ),
+    );
+
+    // Se novasFotos não for nula, atualiza a lista de fotos
+    if (novasFotos != null) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => FotosScreen(
+            fotos: novasFotos, // Lista atualizada de fotos
+            patrimonio: patrimonio,
+            user: user,
+            patrimonios: patrimonios,
+          ),
+        ),
+      );
+    }
   }
 }

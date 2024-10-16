@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
-import 'home_screen.dart';
-import 'profile_screen.dart';
+import 'package:barcode_scan2/barcode_scan2.dart'; // Importando o barcode_scan2
 import '../models/patrimonio.dart';
-import 'ProductDetailScreen.dart';
+import 'ProductDetailScreen.dart'; // Importe a tela de detalhes do produto
 
 class BarcodeScannerScreen extends StatefulWidget {
   final dynamic user;
@@ -18,7 +17,6 @@ class BarcodeScannerScreen extends StatefulWidget {
 class _BarcodeScannerScreenState extends State<BarcodeScannerScreen> {
   late CameraController _controller;
   late Future<void> _initializeControllerFuture;
-  int _currentIndex = 1; // Índice inicial correspondente ao BarcodeScanner
   bool _isCameraVisible = true;
 
   @override
@@ -43,15 +41,6 @@ class _BarcodeScannerScreenState extends State<BarcodeScannerScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.greenAccent,
-        title: Center(
-          child: Text(
-            'Conecta',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-          ),
-        ),
-      ),
       body: Stack(
         children: [
           _isCameraVisible
@@ -85,10 +74,11 @@ class _BarcodeScannerScreenState extends State<BarcodeScannerScreen> {
             child: Row(
               children: [
                 ElevatedButton.icon(
-                  onPressed: () {
-                    setState(() {
-                      _isCameraVisible = true;
-                    });
+                  onPressed: () async {
+                    String? barcode = await _scanBarcode();
+                    if (barcode != null) {
+                      _searchProduct(barcode, context);
+                    }
                   },
                   icon: Icon(Icons.qr_code, size: 30),
                   label: Text('Escanear', style: TextStyle(fontSize: 20)),
@@ -122,21 +112,19 @@ class _BarcodeScannerScreenState extends State<BarcodeScannerScreen> {
           ),
         ],
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const [
-          BottomNavigationBarItem(
-              icon: Icon(Icons.home, size: 50), label: 'Início'),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.qr_code, size: 50), label: 'Escanear'),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.person, size: 50), label: 'Perfil'),
-        ],
-        currentIndex: _currentIndex,
-        selectedItemColor: Colors.purple,
-        unselectedItemColor: Colors.black,
-        onTap: (index) => _onBottomNavTap(index, context),
-      ),
     );
+  }
+
+  Future<String?> _scanBarcode() async {
+    try {
+      var result = await BarcodeScanner.scan(); // Usando o barcode_scan2
+      return result.rawContent; // Retorna o conteúdo do código escaneado
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Erro ao escanear: $e')),
+      );
+      return null;
+    }
   }
 
   void _searchProduct(String productId, BuildContext context) {
@@ -155,49 +143,21 @@ class _BarcodeScannerScreenState extends State<BarcodeScannerScreen> {
       orElse: () => notFoundProduct,
     );
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(product.nome)),
-    );
-
     if (product.id.isNotEmpty) {
-      Navigator.of(context).pushReplacement(MaterialPageRoute(
-        builder: (context) => ProductDetailScreen(
-          patrimonio: product,
-          user: widget.user,
-          patrimonios: widget.patrimonios,
+      // Redirecionar para a tela de detalhes do produto
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => ProductDetailScreen(
+            user: widget.user,
+            patrimonio: product,
+            patrimonios: widget.patrimonios,
+          ),
         ),
-      ));
-    }
-  }
-
-  void _onBottomNavTap(int index, BuildContext context) {
-    if (index != _currentIndex) {
-      setState(() {
-        _currentIndex = index;
-      });
-
-      switch (index) {
-        case 0:
-          Navigator.of(context).pushReplacement(
-            MaterialPageRoute(
-                builder: (context) => HomeScreen(user: widget.user)),
-          );
-          break;
-        case 1:
-          // Permanece na tela de BarcodeScanner
-          break;
-        case 2:
-          Navigator.of(context).pushReplacement(
-            MaterialPageRoute(
-              builder: (context) => ProfileScreen(
-                userName: widget.user.nome,
-                user: widget.user,
-                patrimonio: widget.patrimonios,
-              ),
-            ),
-          );
-          break;
-      }
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(product.nome)),
+      );
     }
   }
 }

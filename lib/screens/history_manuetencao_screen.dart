@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../models/patrimonio.dart';
-import 'BarcodeScannerScreen.dart';
 import 'profile_screen.dart';
 import 'home_screen.dart'; // Certifique-se de ter esta tela
 import '../models/user.dart';

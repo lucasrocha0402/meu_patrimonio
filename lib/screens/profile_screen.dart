@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:patrimonio_izzy_app/models/patrimonio.dart';
 import '../models/user.dart';
 import '../screens/login_screen.dart';
-import '../screens/home_screen.dart';
-import 'BarcodeScannerScreen.dart';
 
 class ProfileScreen extends StatefulWidget {
   final String userName;
@@ -22,54 +20,9 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  int _currentIndex = 2; // Ajustado para que o perfil seja o selecionado
-
-  void _onItemTapped(int index) {
-    if (index != _currentIndex) {
-      setState(() {
-        _currentIndex = index;
-      });
-
-      switch (index) {
-        case 0:
-          Navigator.of(context).pushReplacement(
-            MaterialPageRoute(
-              builder: (context) => HomeScreen(user: widget.user),
-            ),
-          );
-          break;
-        case 1:
-          Navigator.of(context).pushReplacement(
-            MaterialPageRoute(
-              builder: (context) => BarcodeScannerScreen(
-                user: widget.user,
-                patrimonios: widget.patrimonio,
-              ),
-            ),
-          );
-          break;
-        case 2:
-          // Já está na tela de perfil, não faz nada
-          break;
-      }
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.greenAccent,
-        title: const Center(
-          child: Text(
-            'Conecta',
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
-      ),
       body: Padding(
         padding: const EdgeInsets.all(47.0),
         child: Column(
@@ -81,26 +34,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ],
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home, size: 50),
-            label: 'Início',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.qr_code, size: 50),
-            label: 'Manutenções',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person, size: 50),
-            label: 'Perfil',
-          ),
-        ],
-        currentIndex: _currentIndex,
-        selectedItemColor: Colors.purple, // Cor do ícone selecionado
-        unselectedItemColor: Colors.black, // Cor dos ícones não selecionados
-        onTap: _onItemTapped,
-      ),
+      // Removido o BottomNavigationBar
     );
   }
 

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:patrimonio_izzy_app/models/user.dart';
+import 'package:patrimonio_izzy_app/screens/home_screen.dart';
 import '../models/patrimonio.dart';
 import 'manutencao_screen.dart';
 import 'BarcodeScannerScreen.dart';
@@ -66,9 +67,8 @@ class _FotosScreenState extends State<FotosScreen> {
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                builder: (context) => BarcodeScannerScreen(
+                builder: (context) => HomeScreen(
                   user: widget.user,
-                  patrimonios: widget.patrimonios,
                 ),
               ),
             );

@@ -144,7 +144,6 @@ class _BarcodeScannerScreenState extends State<BarcodeScannerScreen> {
     );
 
     if (product.id.isNotEmpty) {
-      // Redirecionar para a tela de detalhes do produto
       Navigator.of(context).push(
         MaterialPageRoute(
           builder: (context) => ProductDetailScreen(

@@ -100,8 +100,8 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
         currentIndex: _currentIndex,
-        selectedItemColor: Colors.purple, // Cor do ícone selecionado
-        unselectedItemColor: Colors.black, // Cor dos ícones não selecionados
+        selectedItemColor: Colors.purple,
+        unselectedItemColor: Colors.black,
         onTap: _onItemTapped,
       ),
     );

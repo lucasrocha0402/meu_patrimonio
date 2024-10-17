@@ -1,19 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:patrimonio_izzy_app/models/user.dart';
+import 'package:patrimonio_izzy_app/screens/home_screen.dart';
 import '../models/patrimonio.dart';
 import 'fotos_screen.dart';
 import 'manutencao_screen.dart';
 import 'adicionar_foto_screen.dart';
+import 'BarcodeScannerScreen.dart'; // Importe a tela de BarcodeScanner
 
 class ProductDetailScreen extends StatelessWidget {
   final Patrimonio patrimonio;
-  final User user; // Adicione esta variável
-  final List<Patrimonio> patrimonios; // Adicione esta variável
+  final User user;
+  final List<Patrimonio> patrimonios;
 
   ProductDetailScreen({
     required this.patrimonio,
-    required this.user, // Receber User pelo construtor
-    required this.patrimonios, // Receber a lista de Patrimonios
+    required this.user,
+    required this.patrimonios,
   });
 
   @override
@@ -27,6 +29,19 @@ class ProductDetailScreen extends StatelessWidget {
             fontSize: 20,
             fontWeight: FontWeight.bold,
           ),
+        ),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => HomeScreen(
+                  user: user,
+                ),
+              ),
+            );
+          },
         ),
         actions: [
           PopupMenuButton<String>(
@@ -112,15 +127,14 @@ class ProductDetailScreen extends StatelessWidget {
         ],
         onTap: (index) {
           if (index == 1) {
-            // Navegar para a tela de fotos
             Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) => FotosScreen(
-                  fotos: patrimonio.fotos, // Passando as fotos do patrimônio
+                  fotos: patrimonio.fotos,
                   patrimonio: patrimonio,
-                  user: user, // Passando o usuário
-                  patrimonios: patrimonios, // Passando a lista de patrimônios
+                  user: user,
+                  patrimonios: patrimonios,
                 ),
               ),
             );
@@ -138,13 +152,14 @@ class ProductDetailScreen extends StatelessWidget {
       ),
     );
 
-    // Se novasFotos não for nula, atualiza a lista de fotos
     if (novasFotos != null) {
+      List<String> updatedPhotos = List.from(patrimonio.fotos)
+        ..addAll(novasFotos);
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
           builder: (context) => FotosScreen(
-            fotos: novasFotos, // Lista atualizada de fotos
+            fotos: updatedPhotos,
             patrimonio: patrimonio,
             user: user,
             patrimonios: patrimonios,

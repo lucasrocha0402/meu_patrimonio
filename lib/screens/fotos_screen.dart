@@ -3,8 +3,6 @@ import 'package:patrimonio_izzy_app/models/user.dart';
 import 'package:patrimonio_izzy_app/screens/home_screen.dart';
 import '../models/patrimonio.dart';
 import 'manutencao_screen.dart';
-import 'BarcodeScannerScreen.dart';
-import 'ProductDetailScreen.dart';
 import 'adicionar_foto_screen.dart';
 
 class FotosScreen extends StatefulWidget {
@@ -53,7 +51,7 @@ class _FotosScreenState extends State<FotosScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.greenAccent,
+        backgroundColor: const Color.fromARGB(255, 123, 209, 168),
         title: Text(
           'Fotos do Patrimônio',
           style: TextStyle(
@@ -64,13 +62,12 @@ class _FotosScreenState extends State<FotosScreen> {
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
-            Navigator.pushReplacement(
+            Navigator.pushAndRemoveUntil(
               context,
               MaterialPageRoute(
-                builder: (context) => HomeScreen(
-                  user: widget.user,
-                ),
+                builder: (context) => HomeScreen(user: widget.user),
               ),
+              (route) => false, // Remove todas as rotas anteriores
             );
           },
         ),
@@ -156,13 +153,11 @@ class _FotosScreenState extends State<FotosScreen> {
       ],
       onTap: (index) {
         if (index == 0) {
-          Navigator.pushReplacement(
+          Navigator.pop(
             context,
             MaterialPageRoute(
-              builder: (context) => ProductDetailScreen(
-                patrimonio: widget.patrimonio,
+              builder: (context) => HomeScreen(
                 user: widget.user,
-                patrimonios: widget.patrimonios,
               ),
             ),
           );

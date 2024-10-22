@@ -81,7 +81,7 @@ class _AdicionarFotoScreenState extends State<AdicionarFotoScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.greenAccent,
+        backgroundColor: const Color.fromARGB(255, 123, 209, 168),
         title: Text(
           'Adicionar Foto',
           style: TextStyle(

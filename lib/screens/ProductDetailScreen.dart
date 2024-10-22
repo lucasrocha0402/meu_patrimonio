@@ -5,7 +5,6 @@ import '../models/patrimonio.dart';
 import 'fotos_screen.dart';
 import 'manutencao_screen.dart';
 import 'adicionar_foto_screen.dart';
-import 'BarcodeScannerScreen.dart'; // Importe a tela de BarcodeScanner
 
 class ProductDetailScreen extends StatelessWidget {
   final Patrimonio patrimonio;
@@ -22,7 +21,7 @@ class ProductDetailScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.greenAccent,
+        backgroundColor: const Color.fromARGB(255, 123, 209, 168),
         title: Text(
           'Detalhes do Patrimônio',
           style: TextStyle(
@@ -33,7 +32,7 @@ class ProductDetailScreen extends StatelessWidget {
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
-            Navigator.pushReplacement(
+            Navigator.pop(
               context,
               MaterialPageRoute(
                 builder: (context) => HomeScreen(

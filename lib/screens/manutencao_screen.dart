@@ -48,7 +48,7 @@ class _ManutencaoScreenState extends State<ManutencaoScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.greenAccent,
+        backgroundColor: const Color.fromARGB(255, 123, 209, 168),
         title: Text(
           'Manutenção do Patrimônio',
           style: TextStyle(

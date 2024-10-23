@@ -43,6 +43,7 @@ class _BarcodeScannerScreenState extends State<BarcodeScannerScreen> {
     return Scaffold(
       body: Stack(
         children: [
+          // Exibir a câmera ou o campo de texto
           _isCameraVisible
               ? FutureBuilder<void>(
                   future: _initializeControllerFuture,
@@ -68,46 +69,53 @@ class _BarcodeScannerScreenState extends State<BarcodeScannerScreen> {
                     ),
                   ),
                 ),
-          Positioned(
-            top: 20,
-            left: 20,
-            child: Row(
-              children: [
-                ElevatedButton.icon(
-                  onPressed: () async {
-                    String? barcode = await _scanBarcode();
-                    if (barcode != null) {
-                      _searchProduct(barcode, context);
-                    }
-                  },
-                  icon: Icon(Icons.qr_code, size: 30),
-                  label: Text('Escanear', style: TextStyle(fontSize: 20)),
-                  style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-                    backgroundColor:
-                        _isCameraVisible ? Colors.purple : Colors.white,
-                    foregroundColor:
-                        _isCameraVisible ? Colors.white : Colors.black,
+
+          // Centralizar os botões
+          Align(
+            alignment: Alignment.topCenter,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 20.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton.icon(
+                    onPressed: () async {
+                      String? barcode = await _scanBarcode();
+                      if (barcode != null) {
+                        _searchProduct(barcode, context);
+                      }
+                    },
+                    icon: Icon(Icons.qr_code, size: 30),
+                    label: Text('Escanear', style: TextStyle(fontSize: 20)),
+                    style: ElevatedButton.styleFrom(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                      backgroundColor:
+                          _isCameraVisible ? Colors.purple : Colors.white,
+                      foregroundColor:
+                          _isCameraVisible ? Colors.white : Colors.black,
+                    ),
                   ),
-                ),
-                SizedBox(width: 10),
-                ElevatedButton.icon(
-                  onPressed: () {
-                    setState(() {
-                      _isCameraVisible = false;
-                    });
-                  },
-                  icon: Icon(Icons.search, size: 30),
-                  label: Text('Pesquisar', style: TextStyle(fontSize: 20)),
-                  style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-                    backgroundColor:
-                        !_isCameraVisible ? Colors.purple : Colors.white,
-                    foregroundColor:
-                        !_isCameraVisible ? Colors.white : Colors.black,
+                  SizedBox(width: 10),
+                  ElevatedButton.icon(
+                    onPressed: () {
+                      setState(() {
+                        _isCameraVisible = false;
+                      });
+                    },
+                    icon: Icon(Icons.search, size: 30),
+                    label: Text('Pesquisar', style: TextStyle(fontSize: 20)),
+                    style: ElevatedButton.styleFrom(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                      backgroundColor:
+                          !_isCameraVisible ? Colors.purple : Colors.white,
+                      foregroundColor:
+                          !_isCameraVisible ? Colors.white : Colors.black,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ],

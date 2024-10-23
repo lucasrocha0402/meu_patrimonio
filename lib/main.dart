@@ -12,6 +12,7 @@ class PatrimonioApp extends StatelessWidget {
       title: 'App de Patrimônio',
       theme: ThemeData(
         primarySwatch: Colors.blue,
+        fontFamily: 'Roboto',
       ),
       home: LoginScreen(), // Tela inicial é a de login
     );

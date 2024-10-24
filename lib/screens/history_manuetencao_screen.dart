@@ -64,8 +64,10 @@ class HistoryManutencaoScreen extends StatelessWidget {
             case 0:
               Navigator.of(context).pushReplacement(
                 MaterialPageRoute(
-                  builder: (context) =>
-                      HomeScreen(user: user), // Passando o usuário
+                  builder: (context) => HomeScreen(
+                    user: user,
+                    token: '',
+                  ), // Passando o usuário
                 ),
               );
               break;

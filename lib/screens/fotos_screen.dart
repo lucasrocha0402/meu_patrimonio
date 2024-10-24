@@ -65,7 +65,10 @@ class _FotosScreenState extends State<FotosScreen> {
             Navigator.pushAndRemoveUntil(
               context,
               MaterialPageRoute(
-                builder: (context) => HomeScreen(user: widget.user),
+                builder: (context) => HomeScreen(
+                  user: widget.user,
+                  token: '',
+                ),
               ),
               (route) => false, // Remove todas as rotas anteriores
             );
@@ -158,6 +161,7 @@ class _FotosScreenState extends State<FotosScreen> {
             MaterialPageRoute(
               builder: (context) => HomeScreen(
                 user: widget.user,
+                token: '',
               ),
             ),
           );

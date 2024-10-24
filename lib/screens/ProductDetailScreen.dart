@@ -37,6 +37,7 @@ class ProductDetailScreen extends StatelessWidget {
               MaterialPageRoute(
                 builder: (context) => HomeScreen(
                   user: user,
+                  token: '',
                 ),
               ),
             );

@@ -6,8 +6,9 @@ import 'profile_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   final User user;
+  final String token;
 
-  HomeScreen({required this.user});
+  HomeScreen({required this.user, required this.token});
 
   @override
   _HomeScreenState createState() => _HomeScreenState();

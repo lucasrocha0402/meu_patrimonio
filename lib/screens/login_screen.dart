@@ -3,8 +3,7 @@ import 'home_screen.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:jwt_decoder/jwt_decoder.dart';
-import '../models/user.dart'; // Importe seu modelo User
+import '../models/user.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -14,13 +13,13 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final emailController = TextEditingController();
   final senhaController = TextEditingController();
-  final storage = FlutterSecureStorage(); // Armazenamento seguro
+  final storage = FlutterSecureStorage();
   String? mensagemErro;
   bool _isLoading = false;
-  bool _obscureText = true; // Para alternar a visibilidade da senha
+  bool _obscureText = true;
 
   Future<void> login() async {
-    final String email = emailController.text;
+    final String email = emailController.text.trim();
     final String senha = senhaController.text;
 
     if (email.isEmpty || senha.isEmpty) {
@@ -40,40 +39,19 @@ class _LoginScreenState extends State<LoginScreen> {
     try {
       final response = await http.post(
         Uri.parse(url),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: jsonEncode({
-          'email': email,
-          'senha': senha,
-        }),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'email': email, 'senha': senha}),
       );
+
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-
         if (data['success'] == true) {
           final String token = data['result'];
-
-          // Decodificando o token
-          final decodedToken = JwtDecoder.decode(token);
-
-          User user = User(
-            email: email,
-            password: senha, // Evitar isso em produção!
-          );
-
-          // Armazenando o token
           await storage.write(key: 'jwt_token', value: token);
-
-          Navigator.of(context).pushReplacement(
-            MaterialPageRoute(
-              builder: (context) => HomeScreen(
-                user: user,
-                token: token,
-              ),
-            ),
-          );
+          await _getUserInfo(token, email);
         } else {
           setState(() {
             mensagemErro = data['message'] ?? 'Email ou senha incorretos.';
@@ -85,6 +63,7 @@ class _LoginScreenState extends State<LoginScreen> {
         });
       }
     } catch (e) {
+      print('Error: $e');
       setState(() {
         mensagemErro = 'Erro ao se conectar ao servidor.';
       });
@@ -95,11 +74,61 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
+  Future<void> _getUserInfo(String token, String email) async {
+    final String url =
+        'https://apiconecta.izzyway.com.br/api/Usuario/GetInformacoes';
+
+    try {
+      final response = await http.get(
+        Uri.parse(url),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+      );
+
+      print('User info response status: ${response.statusCode}');
+      print('User info response body: ${response.body}');
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        String nomeCompleto = data['result']['nome'];
+        String primeiroNome = nomeCompleto.split(' ').first;
+
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (context) => HomeScreen(
+              user: User(
+                email: email,
+                password: '', // Evitar armazenar senha
+                token: token, // Armazenar o token
+              ),
+              primeiroNome: primeiroNome,
+              token: token,
+            ),
+          ),
+        );
+      } else {
+        setState(() {
+          mensagemErro =
+              'Erro ao obter informações do usuário: ${response.reasonPhrase}';
+        });
+        print('Erro: ${response.body}');
+      }
+    } catch (e) {
+      print('Error ao obter informações do usuário: $e');
+      setState(() {
+        mensagemErro =
+            'Erro ao se conectar ao servidor para obter informações.';
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(''),
+        title: Text('Login'),
         backgroundColor: const Color.fromARGB(255, 123, 209, 168),
       ),
       body: SingleChildScrollView(
@@ -108,16 +137,10 @@ class _LoginScreenState extends State<LoginScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Image.asset(
-                'assets/imagen/enterprise_icon.png',
-                height: 200,
-              ),
+              Image.asset('assets/imagen/enterprise_icon.png', height: 200),
               Text(
                 'Conecta',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
               SizedBox(height: 40),
               TextField(
@@ -136,7 +159,6 @@ class _LoginScreenState extends State<LoginScreen> {
               SizedBox(height: 30),
               TextField(
                 controller: senhaController,
-                keyboardType: TextInputType.visiblePassword,
                 decoration: InputDecoration(
                   labelText: 'Senha',
                   border: OutlineInputBorder(
@@ -145,8 +167,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   suffixIcon: IconButton(
                     icon: Icon(
-                      _obscureText ? Icons.visibility : Icons.visibility_off,
-                    ),
+                        _obscureText ? Icons.visibility : Icons.visibility_off),
                     onPressed: () {
                       setState(() {
                         _obscureText = !_obscureText;
@@ -178,10 +199,8 @@ class _LoginScreenState extends State<LoginScreen> {
               if (mensagemErro != null)
                 Padding(
                   padding: const EdgeInsets.only(top: 20.0),
-                  child: Text(
-                    mensagemErro!,
-                    style: TextStyle(color: Colors.red),
-                  ),
+                  child:
+                      Text(mensagemErro!, style: TextStyle(color: Colors.red)),
                 ),
             ],
           ),

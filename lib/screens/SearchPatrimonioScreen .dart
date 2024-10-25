@@ -1,40 +1,85 @@
 import 'package:flutter/material.dart';
 import '../models/patrimonio.dart';
 import 'ProductDetailScreen.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import '../models/user.dart';
 
 class SearchPatrimonioScreen extends StatefulWidget {
-  final List<Patrimonio> patrimonioList;
-  final dynamic user; // Adicione o parâmetro user
-  final List<Patrimonio> patrimonios; // Adicione o parâmetro patrimonios
+  final User user; // Assuming User is a defined class
+  final List<Patrimonio> patrimonios;
 
-  SearchPatrimonioScreen(
-      {required this.patrimonioList,
-      required this.user,
-      required this.patrimonios});
+  SearchPatrimonioScreen({
+    required this.user,
+    required this.patrimonios,
+  });
 
   @override
   _SearchPatrimonioScreenState createState() => _SearchPatrimonioScreenState();
 }
 
 class _SearchPatrimonioScreenState extends State<SearchPatrimonioScreen> {
-  List<Patrimonio> filteredList = [];
+  Patrimonio? foundPatrimonio;
+  bool isLoading = false;
 
-  @override
-  void initState() {
-    super.initState();
-    filteredList = widget.patrimonioList; // Inicializa com a lista completa
+  void filterPatrimonio(String query) async {
+    if (query.isEmpty) {
+      setState(() {
+        foundPatrimonio = null;
+      });
+      return;
+    }
+
+    setState(() {
+      isLoading = true; // Start loading
+    });
+
+    final String url =
+        'https://apiconecta.izzyway.com.br/api/Patrimonio/GetBemPorCodigo?codigo=$query';
+
+    try {
+      final response = await http.get(
+        Uri.parse(url),
+        headers: {
+          'Authorization': 'Bearer ${widget.user.token}',
+          'Content-Type': 'application/json',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body)['result'];
+        setState(() {
+          foundPatrimonio = data != null
+              ? Patrimonio(
+                  nome: data['nome'],
+                  serie: data['serie'].toDouble(),
+                  categoria: data['categoria'],
+                  marca: data['marca'],
+                  garantia: data['garantia'],
+                  colaborador: data['colaborador'],
+                  fotos: List<String>.from(data['fotos'] ?? []),
+                  codigo: data['codigo'] ?? '',
+                  localizacao: data['localizacao'] ?? '',
+                  status: data['status'] ?? '',
+                )
+              : null;
+        });
+      } else {
+        _showErrorSnackBar(
+            'Erro ao buscar patrimônio: ${response.reasonPhrase}');
+      }
+    } catch (e) {
+      _showErrorSnackBar('Erro ao se conectar ao servidor: $e');
+    } finally {
+      setState(() {
+        isLoading = false; // Stop loading
+      });
+    }
   }
 
-  void filterPatrimonio(String query) {
-    setState(() {
-      if (query.isEmpty) {
-        filteredList = widget.patrimonioList;
-      } else {
-        filteredList = widget.patrimonioList.where((patrimonio) {
-          return patrimonio.id.toString().contains(query);
-        }).toList();
-      }
-    });
+  void _showErrorSnackBar(String message) {
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text(message)));
   }
 
   @override
@@ -55,33 +100,27 @@ class _SearchPatrimonioScreenState extends State<SearchPatrimonioScreen> {
               onChanged: filterPatrimonio,
             ),
             SizedBox(height: 10),
-            Expanded(
-              child: filteredList.isEmpty
-                  ? Center(child: Text('Nenhum patrimônio encontrado.'))
-                  : ListView.builder(
-                      itemCount: filteredList.length,
-                      itemBuilder: (context, index) {
-                        return ListTile(
-                          title: Text(
-                            'ID: ${filteredList[index].id} - ${filteredList[index].nome}',
-                          ),
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => ProductDetailScreen(
-                                  patrimonio: filteredList[index],
-                                  user: widget.user, // Passando o user aqui
-                                  patrimonios: widget
-                                      .patrimonios, // Passando a lista de patrimônios
+            isLoading
+                ? Center(child: CircularProgressIndicator())
+                : Expanded(
+                    child: foundPatrimonio == null
+                        ? Center(child: Text('Nenhum patrimônio encontrado.'))
+                        : ListTile(
+                            title: Text('Nome: ${foundPatrimonio!.nome}'),
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => ProductDetailScreen(
+                                    patrimonio: foundPatrimonio!,
+                                    user: widget.user,
+                                    patrimonios: widget.patrimonios,
+                                  ),
                                 ),
-                              ),
-                            );
-                          },
-                        );
-                      },
-                    ),
-            ),
+                              );
+                            },
+                          ),
+                  ),
           ],
         ),
       ),

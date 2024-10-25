@@ -19,7 +19,7 @@ class HistoryManutencaoScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Histórico de Manutenções - ID: ${patrimonio.id}'),
+        title: Text('Histórico de Manutenções '),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -67,6 +67,7 @@ class HistoryManutencaoScreen extends StatelessWidget {
                   builder: (context) => HomeScreen(
                     user: user,
                     token: '',
+                    primeiroNome: '',
                   ), // Passando o usuário
                 ),
               );
@@ -78,7 +79,7 @@ class HistoryManutencaoScreen extends StatelessWidget {
               Navigator.of(context).pushReplacement(
                 MaterialPageRoute(
                   builder: (context) => ProfileScreen(
-                    userName: userName, // Passando o nome do usuário
+                    // Passando o nome do usuário
                     user: user, // Passando o objeto do usuário
                     patrimonio: [], // Passe a lista de patrimônio, se necessário
                   ),

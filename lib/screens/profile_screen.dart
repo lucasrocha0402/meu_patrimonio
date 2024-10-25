@@ -4,12 +4,10 @@ import '../models/user.dart';
 import '../screens/login_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
-  final String userName;
   final User user;
   final List<Patrimonio> patrimonio;
 
   const ProfileScreen({
-    required this.userName,
     required this.user,
     required this.patrimonio,
     Key? key,

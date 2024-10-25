@@ -6,7 +6,7 @@ import 'fotos_screen.dart';
 import 'manutencao_screen.dart';
 import 'adicionar_foto_screen.dart';
 
-class ProductDetailScreen extends StatelessWidget {
+class ProductDetailScreen extends StatefulWidget {
   final Patrimonio patrimonio;
   final User user;
   final List<Patrimonio> patrimonios;
@@ -16,6 +16,13 @@ class ProductDetailScreen extends StatelessWidget {
     required this.user,
     required this.patrimonios,
   });
+
+  @override
+  _ProductDetailScreenState createState() => _ProductDetailScreenState();
+}
+
+class _ProductDetailScreenState extends State<ProductDetailScreen> {
+  int _currentIndex = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -36,8 +43,9 @@ class ProductDetailScreen extends StatelessWidget {
               context,
               MaterialPageRoute(
                 builder: (context) => HomeScreen(
-                  user: user,
+                  user: widget.user,
                   token: '',
+                  primeiroNome: '',
                 ),
               ),
             );
@@ -51,7 +59,7 @@ class ProductDetailScreen extends StatelessWidget {
                   context,
                   MaterialPageRoute(
                     builder: (context) =>
-                        ManutencaoScreen(patrimonio: patrimonio),
+                        ManutencaoScreen(patrimonio: widget.patrimonio),
                   ),
                 );
               } else if (value == 'adicionar_foto') {
@@ -77,37 +85,57 @@ class ProductDetailScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Nome: ${patrimonio.nome}',
+              'Nome: ${widget.patrimonio.nome}',
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 30),
             Text(
-              'ID: ${patrimonio.id}',
+              'Código: ${widget.patrimonio.codigo}',
               style: TextStyle(fontSize: 18),
             ),
             SizedBox(height: 30),
             Text(
-              'Série: ${patrimonio.serie}',
+              'Série: ${widget.patrimonio.serie ?? "Não disponível"}',
               style: TextStyle(fontSize: 18),
             ),
             SizedBox(height: 30),
             Text(
-              'Categoria: ${patrimonio.categoria}',
+              'Categoria: ${widget.patrimonio.categoria ?? "Não disponível"}',
               style: TextStyle(fontSize: 18),
             ),
             SizedBox(height: 30),
             Text(
-              'Marca: ${patrimonio.marca}',
+              'Marca: ${widget.patrimonio.marca}',
               style: TextStyle(fontSize: 18),
             ),
             SizedBox(height: 30),
             Text(
-              'Garantia: ${patrimonio.garantia}',
+              'Garantia: ${widget.patrimonio.garantia ?? "Não disponível"}',
               style: TextStyle(fontSize: 18),
             ),
             SizedBox(height: 30),
             Text(
-              'Colaborador: ${patrimonio.colaborador}',
+              'Localização: ${widget.patrimonio.localizacao}',
+              style: TextStyle(fontSize: 18),
+            ),
+            SizedBox(height: 30),
+            Text(
+              'Status: ${widget.patrimonio.status}',
+              style: TextStyle(fontSize: 18),
+            ),
+            SizedBox(height: 30),
+            Text(
+              'Ambiente: ${widget.patrimonio.ambiente ?? "Não disponível"}',
+              style: TextStyle(fontSize: 18),
+            ),
+            SizedBox(height: 30),
+            Text(
+              'Pessoa: ${widget.patrimonio.pessoa ?? "Não disponível"}',
+              style: TextStyle(fontSize: 18),
+            ),
+            SizedBox(height: 30),
+            Text(
+              'Colaborador: ${widget.patrimonio.colaborador ?? "Não disponível"}',
               style: TextStyle(fontSize: 18),
             ),
             SizedBox(height: 40),
@@ -115,6 +143,7 @@ class ProductDetailScreen extends StatelessWidget {
         ),
       ),
       bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _currentIndex,
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.info, size: 50),
@@ -126,15 +155,18 @@ class ProductDetailScreen extends StatelessWidget {
           ),
         ],
         onTap: (index) {
+          setState(() {
+            _currentIndex = index;
+          });
           if (index == 1) {
             Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) => FotosScreen(
-                  fotos: patrimonio.fotos,
-                  patrimonio: patrimonio,
-                  user: user,
-                  patrimonios: patrimonios,
+                  fotos: widget.patrimonio.fotos,
+                  patrimonio: widget.patrimonio,
+                  user: widget.user,
+                  patrimonios: widget.patrimonios,
                 ),
               ),
             );
@@ -153,16 +185,18 @@ class ProductDetailScreen extends StatelessWidget {
     );
 
     if (novasFotos != null) {
-      List<String> updatedPhotos = List.from(patrimonio.fotos)
-        ..addAll(novasFotos);
+      setState(() {
+        widget.patrimonio.fotos
+            .addAll(novasFotos); // Update the patrimonio's photos directly
+      });
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
           builder: (context) => FotosScreen(
-            fotos: updatedPhotos,
-            patrimonio: patrimonio,
-            user: user,
-            patrimonios: patrimonios,
+            fotos: widget.patrimonio.fotos,
+            patrimonio: widget.patrimonio,
+            user: widget.user,
+            patrimonios: widget.patrimonios,
           ),
         ),
       );

@@ -68,6 +68,7 @@ class _FotosScreenState extends State<FotosScreen> {
                 builder: (context) => HomeScreen(
                   user: widget.user,
                   token: '',
+                  primeiroNome: '',
                 ),
               ),
               (route) => false, // Remove todas as rotas anteriores
@@ -162,6 +163,7 @@ class _FotosScreenState extends State<FotosScreen> {
               builder: (context) => HomeScreen(
                 user: widget.user,
                 token: '',
+                primeiroNome: '',
               ),
             ),
           );

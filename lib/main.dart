@@ -14,7 +14,7 @@ class PatrimonioApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         fontFamily: 'Roboto',
       ),
-      home: LoginScreen(), // Tela inicial é a de login
+      home: LoginScreen(),
     );
   }
 }

@@ -1,22 +1,38 @@
 import 'package:flutter/material.dart';
-import 'home_screen.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:patrimonio_izzy_app/layers_login/configLayou.dart';
+import 'home_screen.dart';
 import '../models/user.dart';
 
-class LoginScreen extends StatefulWidget {
+class LoginScreen extends StatelessWidget {
   @override
-  _LoginScreenState createState() => _LoginScreenState();
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'App de Patrimônio',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+        fontFamily: 'Roboto',
+      ),
+      home: LoginPage(),
+    );
+  }
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class LoginPage extends StatefulWidget {
+  @override
+  _LoginPageState createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
   final emailController = TextEditingController();
   final senhaController = TextEditingController();
   final storage = FlutterSecureStorage();
   String? mensagemErro;
   bool _isLoading = false;
   bool _obscureText = true;
+  bool _isChecked = false;
 
   Future<void> login() async {
     final String email = emailController.text.trim();
@@ -127,83 +143,170 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Login'),
-        backgroundColor: const Color.fromARGB(255, 123, 209, 168),
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 32.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Image.asset('assets/imagen/enterprise_icon.png', height: 200),
-              Text(
-                'Conecta',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: 40),
-              TextField(
-                controller: emailController,
-                keyboardType: TextInputType.emailAddress,
-                decoration: InputDecoration(
-                  labelText: 'Email',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide(color: Colors.white30),
-                  ),
-                  contentPadding:
-                      EdgeInsets.symmetric(vertical: 20.0, horizontal: 30.0),
-                ),
-              ),
-              SizedBox(height: 30),
-              TextField(
-                controller: senhaController,
-                decoration: InputDecoration(
-                  labelText: 'Senha',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide(color: Colors.white30),
-                  ),
-                  suffixIcon: IconButton(
-                    icon: Icon(
-                        _obscureText ? Icons.visibility : Icons.visibility_off),
-                    onPressed: () {
-                      setState(() {
-                        _obscureText = !_obscureText;
-                      });
-                    },
-                  ),
-                  contentPadding:
-                      EdgeInsets.symmetric(vertical: 20.0, horizontal: 30.0),
-                ),
-                obscureText: _obscureText,
-              ),
-              SizedBox(height: 40),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: _isLoading ? null : login,
-                  child: _isLoading
-                      ? CircularProgressIndicator(color: Colors.white)
-                      : Text('Entrar'),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.greenAccent,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    padding: EdgeInsets.symmetric(vertical: 20.0),
-                  ),
-                ),
-              ),
-              if (mensagemErro != null)
-                Padding(
-                  padding: const EdgeInsets.only(top: 20.0),
-                  child:
-                      Text(mensagemErro!, style: TextStyle(color: Colors.red)),
-                ),
-            ],
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/imagen/primaryBg.png'),
+            fit: BoxFit.cover,
           ),
+        ),
+        child: Stack(
+          children: <Widget>[
+            Positioned(
+              top: 130,
+              left: 59,
+              child: Image.asset(
+                'assets/imagen/enterprise_icon.png',
+                width: 100,
+                height: 100,
+              ),
+            ),
+            Positioned(
+              top: 200,
+              left: 59,
+              child: Text(
+                'Conecta',
+                style: TextStyle(
+                  fontSize: 48,
+                  fontFamily: 'Poppins-Medium',
+                  fontWeight: FontWeight.w500,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+            Positioned(
+              top: 290,
+              right: 16,
+              child: Container(
+                width: MediaQuery.of(context).size.width - 32,
+                height: 700,
+                decoration: BoxDecoration(
+                  color: layerOneBg,
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(60.0),
+                    bottomRight: Radius.circular(60.0),
+                  ),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    children: [
+                      Container(
+                        width: MediaQuery.of(context).size.width - 32,
+                        height: 600,
+                        decoration: BoxDecoration(
+                          color: layerTwoBg,
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(60.0),
+                            bottomRight: Radius.circular(60.0),
+                            bottomLeft: Radius.circular(60.0),
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.3),
+                              spreadRadius: 5,
+                              blurRadius: 15,
+                              offset: Offset(0, 3),
+                            ),
+                          ],
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              TextField(
+                                controller: emailController,
+                                keyboardType: TextInputType.emailAddress,
+                                decoration: InputDecoration(
+                                  labelText: 'Email',
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                    borderSide:
+                                        BorderSide(color: Colors.white30),
+                                  ),
+                                  contentPadding: EdgeInsets.symmetric(
+                                      vertical: 20.0, horizontal: 30.0),
+                                ),
+                              ),
+                              SizedBox(height: 20),
+                              TextField(
+                                controller: senhaController,
+                                decoration: InputDecoration(
+                                  labelText: 'Senha',
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                    borderSide:
+                                        BorderSide(color: Colors.white30),
+                                  ),
+                                  suffixIcon: IconButton(
+                                    icon: Icon(_obscureText
+                                        ? Icons.visibility
+                                        : Icons.visibility_off),
+                                    onPressed: () {
+                                      setState(() {
+                                        _obscureText = !_obscureText;
+                                      });
+                                    },
+                                  ),
+                                  contentPadding: EdgeInsets.symmetric(
+                                      vertical: 20.0, horizontal: 30.0),
+                                ),
+                                obscureText: _obscureText,
+                              ),
+                              SizedBox(height: 30),
+                              SizedBox(
+                                width: double.infinity,
+                                child: ElevatedButton(
+                                  onPressed: _isLoading ? null : login,
+                                  child: _isLoading
+                                      ? CircularProgressIndicator(
+                                          color: Colors.white)
+                                      : Text('Entrar'),
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.greenAccent,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    padding:
+                                        EdgeInsets.symmetric(vertical: 20.0),
+                                  ),
+                                ),
+                              ),
+                              if (mensagemErro != null)
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 20.0),
+                                  child: Text(mensagemErro!,
+                                      style: TextStyle(color: Colors.red)),
+                                ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Checkbox(
+                                    checkColor: Colors.black,
+                                    activeColor: Colors.green,
+                                    value:
+                                        _isChecked, // Usar a variável de estado
+                                    onChanged: (bool? value) {
+                                      setState(() {
+                                        _isChecked =
+                                            value ?? false; // Atualiza o estado
+                                      });
+                                    },
+                                  ),
+                                  Text('Deixar senha salva'), // Legenda ao lado
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );

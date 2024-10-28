@@ -105,7 +105,11 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           _buildHomePage(),
           BarcodeScannerScreen(user: widget.user, patrimonios: patrimonios),
-          ProfileScreen(user: widget.user, patrimonio: patrimonios),
+          ProfileScreen(
+            user: widget.user,
+            token: widget.token,
+            patrimonios: [],
+          ),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(

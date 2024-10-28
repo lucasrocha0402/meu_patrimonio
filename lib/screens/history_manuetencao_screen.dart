@@ -81,7 +81,8 @@ class HistoryManutencaoScreen extends StatelessWidget {
                   builder: (context) => ProfileScreen(
                     // Passando o nome do usuário
                     user: user, // Passando o objeto do usuário
-                    patrimonio: [], // Passe a lista de patrimônio, se necessário
+                    patrimonios: [],
+                    token: '', // Passe a lista de patrimônio, se necessário
                   ),
                 ),
               );

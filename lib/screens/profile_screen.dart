@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:patrimonio_izzy_app/models/patrimonio.dart';
 import '../models/user.dart';
 import '../screens/login_screen.dart';
+import 'ChangePasswordScreen.dart';
 
 class ProfileScreen extends StatefulWidget {
   final User user;
@@ -29,6 +30,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
             Center(
               child: _buildLogoutButton(),
             ),
+            SizedBox(height: 20), // Espaço entre os botões
+            Center(
+              child: _buildChangePasswordButton(),
+            )
           ],
         ),
       ),
@@ -76,6 +81,25 @@ class _ProfileScreenState extends State<ProfileScreen> {
     Navigator.of(context).pushAndRemoveUntil(
       MaterialPageRoute(builder: (context) => LoginScreen()),
       (route) => false,
+    );
+  }
+
+  ElevatedButton _buildChangePasswordButton() {
+    return ElevatedButton(
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => ChangePasswordScreen()),
+        );
+      },
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.blueAccent,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 110.0),
+      ),
+      child: const Text('Alterar Senha'),
     );
   }
 }

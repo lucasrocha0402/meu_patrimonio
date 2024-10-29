@@ -4,7 +4,6 @@ import 'package:http/http.dart' as http;
 import 'package:patrimonio_izzy_app/models/patrimonio.dart';
 import 'package:patrimonio_izzy_app/models/user.dart';
 import 'package:patrimonio_izzy_app/screens/login_screen.dart';
-import 'login_screen.dart';
 import 'ChangePasswordScreen.dart';
 
 class ProfileScreen extends StatefulWidget {

@@ -34,6 +34,33 @@ class _LoginPageState extends State<LoginPage> {
   bool _obscureText = true;
   bool _isChecked = false;
 
+  FocusNode emailFocusNode = FocusNode();
+  FocusNode passwordFocusNode = FocusNode();
+  double _topPosition = 290; // Posição inicial
+
+  @override
+  void initState() {
+    super.initState();
+    emailFocusNode.addListener(_focusListener);
+    passwordFocusNode.addListener(_focusListener);
+  }
+
+  @override
+  void dispose() {
+    emailFocusNode.removeListener(_focusListener);
+    passwordFocusNode.removeListener(_focusListener);
+    emailFocusNode.dispose();
+    passwordFocusNode.dispose();
+    super.dispose();
+  }
+
+  void _focusListener() {
+    setState(() {
+      _topPosition =
+          (emailFocusNode.hasFocus || passwordFocusNode.hasFocus) ? 200 : 290;
+    });
+  }
+
   Future<void> login() async {
     final String email = emailController.text.trim();
     final String senha = senhaController.text;
@@ -58,10 +85,8 @@ class _LoginPageState extends State<LoginPage> {
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({'email': email, 'senha': senha}),
       );
-
       print('Response status: ${response.statusCode}');
       print('Response body: ${response.body}');
-
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         if (data['success'] == true) {
@@ -102,10 +127,8 @@ class _LoginPageState extends State<LoginPage> {
           'Content-Type': 'application/json',
         },
       );
-
       print('User info response status: ${response.statusCode}');
       print('User info response body: ${response.body}');
-
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         String nomeCompleto = data['result']['nome'];
@@ -117,7 +140,7 @@ class _LoginPageState extends State<LoginPage> {
               user: User(
                 email: email,
                 password: '', // Evitar armazenar senha
-                token: token, // Armazenar o token
+                token: token,
               ),
               primeiroNome: primeiroNome,
               token: token,
@@ -285,16 +308,14 @@ class _LoginPageState extends State<LoginPage> {
                                   Checkbox(
                                     checkColor: Colors.black,
                                     activeColor: Colors.green,
-                                    value:
-                                        _isChecked, // Usar a variável de estado
+                                    value: _isChecked,
                                     onChanged: (bool? value) {
                                       setState(() {
-                                        _isChecked =
-                                            value ?? false; // Atualiza o estado
+                                        _isChecked = value ?? false;
                                       });
                                     },
                                   ),
-                                  Text('Deixar senha salva'), // Legenda ao lado
+                                  Text('Deixar senha salva'),
                                 ],
                               ),
                             ],

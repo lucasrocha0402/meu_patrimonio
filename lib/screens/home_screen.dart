@@ -113,17 +113,26 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
-        items: const [
+        items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.home, size: 50),
+            icon: Icon(
+              Icons.home,
+              size: _currentIndex == 0 ? 90 : 50, // Aumenta o tamanho do ícone
+            ),
             label: 'Início',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.qr_code, size: 50),
+            icon: Icon(
+              Icons.qr_code,
+              size: _currentIndex == 1 ? 90 : 50, // Aumenta o tamanho do ícone
+            ),
             label: 'Manutenções',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.person, size: 50),
+            icon: Icon(
+              Icons.person,
+              size: _currentIndex == 2 ? 90 : 50, // Aumenta o tamanho do ícone
+            ),
             label: 'Perfil',
           ),
         ],

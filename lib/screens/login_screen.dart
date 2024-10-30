@@ -33,6 +33,7 @@ class _LoginPageState extends State<LoginPage> {
   bool _isLoading = false;
   bool _obscureText = true;
   bool _isChecked = false;
+  double _containerHeight = 800;
 
   FocusNode emailFocusNode = FocusNode();
   FocusNode passwordFocusNode = FocusNode();
@@ -163,6 +164,12 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
+  void _onInputFocus() {
+    setState(() {
+      _containerHeight = 400;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -201,8 +208,8 @@ class _LoginPageState extends State<LoginPage> {
               top: 290,
               right: 16,
               child: Container(
-                width: MediaQuery.of(context).size.width - 32,
-                height: 700,
+                width: MediaQuery.of(context).size.width - 64,
+                height: 550,
                 decoration: BoxDecoration(
                   color: layerOneBg,
                   borderRadius: BorderRadius.only(
@@ -213,17 +220,15 @@ class _LoginPageState extends State<LoginPage> {
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
+                      // Primeiro Container
                       Container(
-                        width: MediaQuery.of(context).size.width - 32,
-                        height: 600,
+                        width: MediaQuery.of(context).size.width - 64,
+                        height: 500,
                         decoration: BoxDecoration(
                           color: layerTwoBg,
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(60.0),
-                            bottomRight: Radius.circular(60.0),
-                            bottomLeft: Radius.circular(60.0),
-                          ),
+                          borderRadius: BorderRadius.circular(30.0),
                           boxShadow: [
                             BoxShadow(
                               color: Colors.black.withOpacity(0.3),
@@ -234,9 +239,9 @@ class _LoginPageState extends State<LoginPage> {
                           ],
                         ),
                         child: Padding(
-                          padding: const EdgeInsets.all(16.0),
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 70, horizontal: 30),
                           child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               TextField(
                                 controller: emailController,
@@ -299,8 +304,10 @@ class _LoginPageState extends State<LoginPage> {
                               if (mensagemErro != null)
                                 Padding(
                                   padding: const EdgeInsets.only(top: 20.0),
-                                  child: Text(mensagemErro!,
-                                      style: TextStyle(color: Colors.red)),
+                                  child: Text(
+                                    mensagemErro!,
+                                    style: TextStyle(color: Colors.red),
+                                  ),
                                 ),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.start,

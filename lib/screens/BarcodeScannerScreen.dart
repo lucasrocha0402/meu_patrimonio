@@ -3,8 +3,7 @@ import 'package:camera/camera.dart';
 import 'package:barcode_scan2/barcode_scan2.dart';
 import '../models/patrimonio.dart';
 import 'ProductDetailScreen.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
+import '../services/api_barcode_service.dart'; // Importe o serviço
 
 class BarcodeScannerScreen extends StatefulWidget {
   final dynamic user;
@@ -21,6 +20,8 @@ class _BarcodeScannerScreenState extends State<BarcodeScannerScreen> {
   late Future<void> _initializeControllerFuture;
   bool _isCameraVisible = true;
   String _productId = '';
+  final ApiService _apiService =
+      ApiService('https://apiconecta.izzyway.com.br/api');
 
   @override
   void initState() {
@@ -158,61 +159,30 @@ class _BarcodeScannerScreenState extends State<BarcodeScannerScreen> {
       return;
     }
 
-    final String url =
-        'https://apiconecta.izzyway.com.br/api/Patrimonio/GetBemPorCodigo?codigo=$productId';
-
     try {
-      final response = await http.get(
-        Uri.parse(url),
-        headers: {
-          'Authorization': 'Bearer ${widget.user.token}',
-          'Content-Type': 'application/json',
-        },
+      Patrimonio? product = await _apiService.getPatrimonioByCodigo(
+        productId,
+        widget.user.token,
       );
 
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body)['result'];
-        if (data != null) {
-          Patrimonio product = Patrimonio(
-            codigo: data['codigo'] ?? '', // Agora pegando 'codigo'
-            nome: data['nome'] ?? 'Nome desconhecido',
-            serie: data['serie'], // Nullable
-            categoria: data['categoria'], // Nullable
-            marca: data['marca'] ?? 'Marca desconhecida',
-            garantia: data['garantia'], // Nullable
-            localizacao: data['localizacao'] ?? 0, // Valor padrão
-            status: data['status'] ?? 0, // Valor padrão
-            ambiente: data['ambiente'], // Nullable
-            pessoa: data['pessoa'], // Nullable
-            colaborador: data[
-                'colaborador'], // Nullable, adicione na classe se necessário
-            fotos: List<String>.from(data['fotos'] ?? []),
-          );
-
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => ProductDetailScreen(
-                user: widget.user,
-                patrimonio: product,
-                patrimonios: widget.patrimonios,
-              ),
+      if (product != null) {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => ProductDetailScreen(
+              user: widget.user,
+              patrimonio: product,
+              patrimonios: widget.patrimonios,
             ),
-          );
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Produto não encontrado.')),
-          );
-        }
+          ),
+        );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-              content:
-                  Text('Erro ao buscar produto: ${response.reasonPhrase}')),
+          SnackBar(content: Text('Produto não encontrado.')),
         );
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Erro ao se conectar ao servidor: $e')),
+        SnackBar(content: Text(e.toString())),
       );
     }
   }

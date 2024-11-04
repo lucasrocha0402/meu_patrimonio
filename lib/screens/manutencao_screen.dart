@@ -16,7 +16,7 @@ class ManutencaoScreen extends StatefulWidget {
 
 class _ManutencaoScreenState extends State<ManutencaoScreen> {
   final TextEditingController _motivoController = TextEditingController();
-  final List<XFile> _fotos = []; // Lista para armazenar as fotos
+  final List<XFile> _fotos = [];
   final ImagePicker _picker = ImagePicker();
 
   Future<void> _adicionarFoto() async {
@@ -69,7 +69,7 @@ class _ManutencaoScreenState extends State<ManutencaoScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Patrimônio: ${widget.patrimonio.nome}', // Acesse o nome diretamente
+              'Patrimônio: ${widget.patrimonio.nome}',
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 20),

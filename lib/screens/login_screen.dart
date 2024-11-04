@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:patrimonio_izzy_app/layers_login/configLayou.dart';
 import 'home_screen.dart';
 import '../models/user.dart';
+import '../services/api_loguin_services.dart';
 
 class LoginScreen extends StatelessWidget {
   @override
@@ -28,39 +26,12 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final emailController = TextEditingController();
   final senhaController = TextEditingController();
-  final storage = FlutterSecureStorage();
   String? mensagemErro;
   bool _isLoading = false;
   bool _obscureText = true;
   bool _isChecked = false;
-  double _containerHeight = 800;
 
-  FocusNode emailFocusNode = FocusNode();
-  FocusNode passwordFocusNode = FocusNode();
-  double _topPosition = 290; // Posição inicial
-
-  @override
-  void initState() {
-    super.initState();
-    emailFocusNode.addListener(_focusListener);
-    passwordFocusNode.addListener(_focusListener);
-  }
-
-  @override
-  void dispose() {
-    emailFocusNode.removeListener(_focusListener);
-    passwordFocusNode.removeListener(_focusListener);
-    emailFocusNode.dispose();
-    passwordFocusNode.dispose();
-    super.dispose();
-  }
-
-  void _focusListener() {
-    setState(() {
-      _topPosition =
-          (emailFocusNode.hasFocus || passwordFocusNode.hasFocus) ? 200 : 290;
-    });
-  }
+  final ApiService apiService = ApiService();
 
   Future<void> login() async {
     final String email = emailController.text.trim();
@@ -78,96 +49,31 @@ class _LoginPageState extends State<LoginPage> {
       mensagemErro = null;
     });
 
-    final String url = 'https://apiconecta.izzyway.com.br/api/Autentication';
-
     try {
-      final response = await http.post(
-        Uri.parse(url),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({'email': email, 'senha': senha}),
+      final token = await apiService.login(email, senha);
+      final userInfo = await apiService.getUserInfo(token);
+
+      String nomeCompleto = userInfo['result']['nome'];
+      String primeiroNome = nomeCompleto.split(' ').first;
+
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (context) => HomeScreen(
+            user: User(email: email, password: '', token: token),
+            primeiroNome: primeiroNome,
+            token: token,
+          ),
+        ),
       );
-      print('Response status: ${response.statusCode}');
-      print('Response body: ${response.body}');
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-        if (data['success'] == true) {
-          final String token = data['result'];
-          await storage.write(key: 'jwt_token', value: token);
-          await _getUserInfo(token, email);
-        } else {
-          setState(() {
-            mensagemErro = data['message'] ?? 'Email ou senha incorretos.';
-          });
-        }
-      } else {
-        setState(() {
-          mensagemErro = 'Erro na autenticação: ${response.reasonPhrase}';
-        });
-      }
     } catch (e) {
-      print('Error: $e');
       setState(() {
-        mensagemErro = 'Erro ao se conectar ao servidor.';
+        mensagemErro = e.toString();
       });
     } finally {
       setState(() {
         _isLoading = false;
       });
     }
-  }
-
-  Future<void> _getUserInfo(String token, String email) async {
-    final String url =
-        'https://apiconecta.izzyway.com.br/api/Usuario/GetInformacoes';
-
-    try {
-      final response = await http.get(
-        Uri.parse(url),
-        headers: {
-          'Authorization': 'Bearer $token',
-          'Content-Type': 'application/json',
-        },
-      );
-      print('User info response status: ${response.statusCode}');
-      print('User info response body: ${response.body}');
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-        String nomeCompleto = data['result']['nome'];
-        String primeiroNome = nomeCompleto.split(' ').first;
-
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(
-            builder: (context) => HomeScreen(
-              user: User(
-                email: email,
-                password: '', // Evitar armazenar senha
-                token: token,
-              ),
-              primeiroNome: primeiroNome,
-              token: token,
-            ),
-          ),
-        );
-      } else {
-        setState(() {
-          mensagemErro =
-              'Erro ao obter informações do usuário: ${response.reasonPhrase}';
-        });
-        print('Erro: ${response.body}');
-      }
-    } catch (e) {
-      print('Error ao obter informações do usuário: $e');
-      setState(() {
-        mensagemErro =
-            'Erro ao se conectar ao servidor para obter informações.';
-      });
-    }
-  }
-
-  void _onInputFocus() {
-    setState(() {
-      _containerHeight = 400;
-    });
   }
 
   @override

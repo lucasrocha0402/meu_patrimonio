@@ -3,8 +3,7 @@ import '../models/user.dart';
 import '../models/patrimonio.dart';
 import 'BarcodeScannerScreen.dart';
 import 'profile_screen.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
+import '../services/api_home_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   final User user;
@@ -25,54 +24,23 @@ class _HomeScreenState extends State<HomeScreen> {
   int _currentIndex = 0;
   List<Patrimonio> patrimonios = [];
   String? mensagemErro;
+  late PatrimonioService patrimonioService;
 
   @override
   void initState() {
     super.initState();
+    patrimonioService = PatrimonioService(
+        baseUrl: 'https://apiconecta.izzyway.com.br', token: widget.token);
     _fetchPatrimonios();
   }
 
   Future<void> _fetchPatrimonios() async {
-    final String url =
-        'https://apiconecta.izzyway.com.br/api/Patrimonio/GetTodosBemColaborador';
-
     try {
-      final response = await http.get(
-        Uri.parse(url),
-        headers: {
-          'Authorization': 'Bearer ${widget.token}',
-          'Content-Type': 'application/json',
-        },
-      );
-
-      if (response.statusCode == 200) {
-        final List<dynamic> data = jsonDecode(response.body)['result'];
-        setState(() {
-          patrimonios = data.map((item) {
-            return Patrimonio(
-              nome: item['nome'],
-              serie: item['serie'].toDouble(),
-              categoria: item['categoria'],
-              marca: item['marca'],
-              garantia: item['garantia'],
-              colaborador: item['colaborador'],
-              fotos: List<String>.from(item['fotos'] ?? []),
-              codigo: item['codigo'] ??
-                  '', // Ensure these attributes exist in your model
-              localizacao:
-                  item['localizacao'] ?? '', // Initialize appropriately
-              status: item['status'] ?? '', // Initialize appropriately
-            );
-          }).toList();
-        });
-      } else {
-        setState(() {
-          mensagemErro = 'Erro ao obter patrimônios: ${response.reasonPhrase}';
-        });
-      }
+      patrimonios = await patrimonioService.fetchPatrimonios();
+      setState(() {});
     } catch (e) {
       setState(() {
-        mensagemErro = 'Erro ao se conectar ao servidor: $e';
+        mensagemErro = e.toString();
       });
     }
   }
@@ -106,9 +74,7 @@ class _HomeScreenState extends State<HomeScreen> {
           _buildHomePage(),
           BarcodeScannerScreen(user: widget.user, patrimonios: patrimonios),
           ProfileScreen(
-            user: widget.user,
             token: widget.token,
-            patrimonios: [],
           ),
         ],
       ),

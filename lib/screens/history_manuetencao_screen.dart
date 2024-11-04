@@ -73,16 +73,12 @@ class HistoryManutencaoScreen extends StatelessWidget {
               );
               break;
             case 1:
-              // Já estamos na tela de manutenções
               break;
             case 2:
               Navigator.of(context).pushReplacement(
                 MaterialPageRoute(
                   builder: (context) => ProfileScreen(
-                    // Passando o nome do usuário
-                    user: user, // Passando o objeto do usuário
-                    patrimonios: [],
-                    token: '', // Passe a lista de patrimônio, se necessário
+                    token: '',
                   ),
                 ),
               );

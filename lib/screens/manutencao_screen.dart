@@ -4,6 +4,7 @@ import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 import 'dart:io';
 import '../models/patrimonio.dart';
+import '../services/api_manutencao_service.dart'; // Importe o serviço
 
 class ManutencaoScreen extends StatefulWidget {
   final Patrimonio patrimonio;
@@ -18,6 +19,8 @@ class _ManutencaoScreenState extends State<ManutencaoScreen> {
   final TextEditingController _motivoController = TextEditingController();
   final List<XFile> _fotos = [];
   final ImagePicker _picker = ImagePicker();
+  final ManutencaoService _manutencaoService =
+      ManutencaoService(); // Instância do serviço
 
   Future<void> _adicionarFoto() async {
     final XFile? foto = await _picker.pickImage(source: ImageSource.camera);
@@ -28,20 +31,25 @@ class _ManutencaoScreenState extends State<ManutencaoScreen> {
     }
   }
 
-  void _enviarManutencao() {
+  Future<void> _enviarManutencao() async {
     String motivo = _motivoController.text;
-    print('Motivo: $motivo');
-    print('Fotos: ${_fotos.map((foto) => foto.path).toList()}');
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Manutenção enviada com sucesso!')),
-    );
+    // Chama o serviço para enviar a manutenção
+    bool sucesso = await _manutencaoService.enviarManutencao(motivo, _fotos);
 
-    // Limpar os campos após o envio
-    _motivoController.clear();
-    setState(() {
-      _fotos.clear(); // Limpa as fotos
-    });
+    if (sucesso) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Manutenção enviada com sucesso!')),
+      );
+      _motivoController.clear();
+      setState(() {
+        _fotos.clear();
+      });
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Falha ao enviar a manutenção!')),
+      );
+    }
   }
 
   @override
@@ -133,9 +141,7 @@ class _ManutencaoScreenState extends State<ManutencaoScreen> {
                                       index); // Remove a foto da lista
                                 });
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                      content:
-                                          Text('Foto excluída com sucesso!')),
+                                  SnackBar(content: Text('Foto excluída!')),
                                 );
                               },
                             ),

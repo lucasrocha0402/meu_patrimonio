@@ -1,9 +1,11 @@
-import 'package:flutter/material.dart';
-import 'package:patrimonio_izzy_app/layers_login/configLayou.dart';
-import 'home_screen.dart';
-import '../models/user.dart';
-import '../services/api_loguin_services.dart';
+import 'package:flutter/material.dart'; // Biblioteca principal para a construção da interface gráfica do Flutter.
+import 'package:patrimonio_izzy_app/layers_login/configLayou.dart'; //  o arquivo de configuração do layout da tela.
+import 'home_screen.dart'; // a tela de destino após o login ser bem-sucedido.
+import '../models/user.dart'; // classe que representa os dados de um usuário.
+import '../services/api_loguin_services.dart'; // Serviço responsável pelas operações de login e interação com a API.
 
+//LoginScreen é a tela inicial do aplicativo, configurando o tema (cor primária e a fonte) e
+//indicando que a tela inicial será o widget LoginPage.
 class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -18,14 +20,24 @@ class LoginScreen extends StatelessWidget {
   }
 }
 
+//LoginPage é um widget StatefulWidget, o que significa que ele tem um estado que pode mudar.
 class LoginPage extends StatefulWidget {
   @override
   _LoginPageState createState() => _LoginPageState();
 }
 
+//No estado (_LoginPageState): Controladores de texto (emailController e senhaController)
+// são usados para pegar o texto inserido nos campos de email e senha.
+// mensagemErro: Armazena mensagens de erro para exibir ao usuário.
+// _isLoading: Flag que indica se o login está em andamento (para mostrar um indicador de carregamento).
+// _obscureText: Controla se a senha deve ser mostrada ou oculta (ícone de olho).
+// _isChecked: Para controlar o estado de um checkbox ("Deixar senha salva").
+// apiService: Instância do serviço responsável por interagir com a API de login.
 class _LoginPageState extends State<LoginPage> {
   final emailController = TextEditingController();
   final senhaController = TextEditingController();
+  final FocusNode emailFocusNode = FocusNode();
+  final FocusNode senhaFocusNode = FocusNode();
   String? mensagemErro;
   bool _isLoading = false;
   bool _obscureText = true;
@@ -33,6 +45,32 @@ class _LoginPageState extends State<LoginPage> {
 
   final ApiService apiService = ApiService();
 
+  @override
+  void initState() {
+    super.initState();
+
+    emailFocusNode.addListener(() {
+      setState(() {});
+    });
+
+    senhaFocusNode.addListener(() {
+      setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    emailFocusNode.dispose();
+    senhaFocusNode.dispose();
+    super.dispose();
+  }
+
+//Função login: Esta função é chamada quando o usuário tenta fazer login. Ela realiza os seguintes passos:
+// Verifica se os campos de email e senha não estão vazios.
+// Exibe um indicador de carregamento (_isLoading).
+// Chama os métodos da apiService para tentar realizar o login e pegar as informações do usuário.
+// Caso o login seja bem-sucedido, navega para a tela HomeScreen e passa os dados do usuário, como o token e o primeiro nome.
+// Se ocorrer algum erro (por exemplo, credenciais inválidas), exibe uma mensagem de erro.
   Future<void> login() async {
     final String email = emailController.text.trim();
     final String senha = senhaController.text;
@@ -75,6 +113,14 @@ class _LoginPageState extends State<LoginPage> {
       });
     }
   }
+
+// Scaffold: Um widget básico para a estrutura visual da tela.
+// Imagem de fundo: O fundo é configurado para exibir uma imagem (primaryBg.png).
+// Formulário de login:
+// Campos de texto para o usuário inserir email e senha.
+// Botão de login: Desabilitado durante o carregamento (indicador de progresso é mostrado).
+// Checkbox: Permite ao usuário marcar a opção de "Deixar senha salva".
+// Mensagens de erro: Se houver algum erro (como campos vazios ou falha no login), uma mensagem será exibida abaixo do botão de login.
 
   @override
   Widget build(BuildContext context) {
@@ -150,6 +196,7 @@ class _LoginPageState extends State<LoginPage> {
                           child: Column(
                             children: [
                               TextField(
+                                focusNode: emailFocusNode,
                                 controller: emailController,
                                 keyboardType: TextInputType.emailAddress,
                                 decoration: InputDecoration(
@@ -165,6 +212,7 @@ class _LoginPageState extends State<LoginPage> {
                               ),
                               SizedBox(height: 20),
                               TextField(
+                                focusNode: senhaFocusNode,
                                 controller: senhaController,
                                 decoration: InputDecoration(
                                   labelText: 'Senha',
@@ -215,6 +263,7 @@ class _LoginPageState extends State<LoginPage> {
                                     style: TextStyle(color: Colors.red),
                                   ),
                                 ),
+                              SizedBox(height: 20),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [

@@ -8,8 +8,9 @@ import '../services/api_manutencao_service.dart'; // Importe o serviço
 
 class ManutencaoScreen extends StatefulWidget {
   final Patrimonio patrimonio;
+  final String token;
 
-  ManutencaoScreen({required this.patrimonio});
+  ManutencaoScreen({required this.patrimonio, required this.token});
 
   @override
   _ManutencaoScreenState createState() => _ManutencaoScreenState();
@@ -34,21 +35,32 @@ class _ManutencaoScreenState extends State<ManutencaoScreen> {
   Future<void> _enviarManutencao() async {
     String motivo = _motivoController.text;
 
-    // Chama o serviço para enviar a manutenção
-    bool sucesso = await _manutencaoService.enviarManutencao(motivo, _fotos);
+    try {
+      // Chama o serviço para enviar a manutenção
+      bool sucesso = await _manutencaoService.enviarManutencao(
+          widget.patrimonio, motivo, _fotos);
 
-    if (sucesso) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Manutenção enviada com sucesso!')),
-      );
-      _motivoController.clear();
-      setState(() {
-        _fotos.clear();
-      });
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Falha ao enviar a manutenção!')),
-      );
+      // Verifique se o widget ainda está montado antes de interagir com o contexto
+      if (sucesso && mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Manutenção enviada com sucesso!')),
+        );
+        _motivoController.clear();
+        setState(() {
+          _fotos.clear();
+        });
+      } else if (!sucesso && mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Falha ao enviar a manutenção!')),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        print("Erro ao enviar manutenção: $e");
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Erro ao enviar a manutenção: $e')),
+        );
+      }
     }
   }
 

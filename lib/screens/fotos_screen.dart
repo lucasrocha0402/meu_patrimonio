@@ -86,6 +86,7 @@ class _FotosScreenState extends State<FotosScreen> {
                     MaterialPageRoute(
                       builder: (context) => ManutencaoScreen(
                         patrimonio: widget.patrimonio,
+                        token: '',
                       ),
                     ),
                   );

@@ -75,6 +75,7 @@ class _LoginPageState extends State<LoginPage> {
     final String email = emailController.text.trim();
     final String senha = senhaController.text;
 
+    // Verificação se os campos de email e senha estão preenchidos
     if (email.isEmpty || senha.isEmpty) {
       setState(() {
         mensagemErro = 'Por favor, preencha todos os campos.';
@@ -88,12 +89,17 @@ class _LoginPageState extends State<LoginPage> {
     });
 
     try {
+      // Chama o método login do ApiService para obter o token
       final token = await apiService.login(email, senha);
-      final userInfo = await apiService.getUserInfo(token);
 
+      // Recupera as informações do usuário usando o token
+      final userInfo = await apiService.getUserInfo();
+
+      // Obtém o nome completo do usuário e divide para pegar o primeiro nome
       String nomeCompleto = userInfo['result']['nome'];
       String primeiroNome = nomeCompleto.split(' ').first;
 
+      // Navega para a tela inicial passando as informações do usuário
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
           builder: (context) => HomeScreen(
@@ -104,6 +110,7 @@ class _LoginPageState extends State<LoginPage> {
         ),
       );
     } catch (e) {
+      // Caso ocorra um erro, exibe a mensagem de erro
       setState(() {
         mensagemErro = e.toString();
       });

@@ -58,8 +58,10 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) =>
-                        ManutencaoScreen(patrimonio: widget.patrimonio),
+                    builder: (context) => ManutencaoScreen(
+                      patrimonio: widget.patrimonio,
+                      token: '',
+                    ),
                   ),
                 );
               } else if (value == 'adicionar_foto') {

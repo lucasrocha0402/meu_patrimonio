@@ -4,7 +4,7 @@ import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 import 'dart:io';
 import '../models/patrimonio.dart';
-import '../services/api_manutencao_service.dart'; // Importe o serviço
+import '../services/api_manutencao_service.dart'; 
 
 class ManutencaoScreen extends StatefulWidget {
   final Patrimonio patrimonio;

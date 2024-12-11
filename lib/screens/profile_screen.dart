@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:patrimonio_izzy_app/screens/login_screen.dart';
 import 'ChangePasswordScreen.dart';
 import '../services/api_profile_screen.dart';
-import '../models/User_Profile.dart'; // Importe sua nova classe
+import '../models/User_Profile.dart'; 
 
 class ProfileScreen extends StatefulWidget {
   final String token;

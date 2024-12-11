@@ -3,7 +3,7 @@ import 'package:camera/camera.dart';
 import 'package:barcode_scan2/barcode_scan2.dart';
 import '../models/patrimonio.dart';
 import 'ProductDetailScreen.dart';
-import '../services/api_barcode_service.dart'; // Importe o serviço
+import '../services/api_barcode_service.dart'; 
 
 class BarcodeScannerScreen extends StatefulWidget {
   final dynamic user;
@@ -68,11 +68,11 @@ class _BarcodeScannerScreenState extends State<BarcodeScannerScreen> {
                       ),
                       onChanged: (value) {
                         setState(() {
-                          _productId = value; // Atualiza o ID do produto
+                          _productId = value; 
                         });
                       },
                       onSubmitted: (value) {
-                        _searchProduct(value, context); // Realiza a busca
+                        _searchProduct(value, context); 
                       },
                     ),
                   ),
@@ -89,7 +89,7 @@ class _BarcodeScannerScreenState extends State<BarcodeScannerScreen> {
                       String? barcode = await _scanBarcode();
                       if (barcode != null) {
                         _searchProduct(
-                            barcode, context); // Realiza a busca após escanear
+                            barcode, context); 
                       }
                     },
                     icon: Icon(Icons.qr_code, size: 30),
@@ -108,9 +108,9 @@ class _BarcodeScannerScreenState extends State<BarcodeScannerScreen> {
                     onPressed: () {
                       setState(() {
                         _isCameraVisible =
-                            false; // Alterna a visibilidade da câmera
+                            false; 
                       });
-                      _searchProduct(_productId, context); // Chama a pesquisa
+                      _searchProduct(_productId, context); 
                     },
                     icon: Icon(Icons.search, size: 30),
                     label: Text('Pesquisar', style: TextStyle(fontSize: 20)),

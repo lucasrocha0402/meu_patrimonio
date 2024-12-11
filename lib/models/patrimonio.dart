@@ -1,16 +1,16 @@
 class Patrimonio {
   final String codigo;
   final String nome;
-  final String? serie; // Nullable
-  final String? categoria; // Nullable
+  final String? serie; 
+  final String? categoria; 
   final String marca;
-  final String? garantia; // Nullable
+  final String? garantia; 
   final int localizacao;
   final int status;
-  final String? ambiente; // Nullable
-  final String? pessoa; // Nullable
-  final String? colaborador; // Adicionado para compatibilidade
-  final List<String> fotos; // Adicionado para compatibilidade
+  final String? ambiente;
+  final String? pessoa; 
+  final String? colaborador; 
+  final List<String> fotos; 
 
   Patrimonio({
     required this.codigo,
@@ -23,9 +23,9 @@ class Patrimonio {
     required this.status,
     this.ambiente,
     this.pessoa,
-    this.colaborador, // Adicionado
-    List<String>? fotos, // Adicionado
-  }) : fotos = fotos ?? []; // Inicializa como uma lista vazia se for nulo
+    this.colaborador, 
+    List<String>? fotos, 
+  }) : fotos = fotos ?? [];
 
   @override
   String toString() {
